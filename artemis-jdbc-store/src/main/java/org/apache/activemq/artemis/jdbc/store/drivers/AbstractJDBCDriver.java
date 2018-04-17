@@ -116,6 +116,7 @@ public abstract class AbstractJDBCDriver {
    private void connect() throws SQLException {
       if (connection == null) {
          if (dataSource != null) {
+            logger.debug("connection doesn't exist yet: using DataSource to create it.");
             try {
                connection = dataSource.getConnection();
             } catch (SQLException e) {
@@ -124,6 +125,7 @@ public abstract class AbstractJDBCDriver {
             }
          } else {
             try {
+               logger.debug("connection doesn't exist yet: using driver class and JDBC URL to create it.");
                if (jdbcDriverClass == null || jdbcDriverClass.isEmpty()) {
                   throw new IllegalStateException("jdbcDriverClass is null or empty!");
                }

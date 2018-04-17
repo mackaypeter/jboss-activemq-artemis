@@ -31,15 +31,11 @@ public final class Db2SequentialFileDriver extends JDBCSequentialFileFactoryDriv
    }
 
    public Db2SequentialFileDriver(DataSource dataSource, SQLProvider provider) {
-      super();
-      this.setDataSource(dataSource);
-      this.setSqlProvider(provider);
+      super(dataSource, provider);
    }
 
    public Db2SequentialFileDriver(Connection connection, SQLProvider provider) {
-      super();
-      this.setConnection(connection);
-      this.setSqlProvider(provider);
+      super(connection, provider);
    }
 
    @Override

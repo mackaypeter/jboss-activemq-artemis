@@ -23,11 +23,14 @@ import java.sql.SQLException;
 
 import org.apache.activemq.artemis.jdbc.store.sql.PropertySQLProvider;
 import org.apache.activemq.artemis.jdbc.store.sql.SQLProvider;
+import org.jboss.logging.Logger;
 
 import static org.apache.activemq.artemis.jdbc.store.sql.PropertySQLProvider.Factory.SQLDialect.DB2;
 import static org.apache.activemq.artemis.jdbc.store.sql.PropertySQLProvider.Factory.SQLDialect.POSTGRESQL;
 
 class JDBCFileUtils {
+
+   private static final Logger logger = Logger.getLogger(JDBCFileUtils.class);
 
    static JDBCSequentialFileFactoryDriver getDBFileDriver(String driverClass,
                                                           String jdbcConnectionUrl,
@@ -66,12 +69,16 @@ class JDBCFileUtils {
    static JDBCSequentialFileFactoryDriver getDBFileDriver(Connection connection, SQLProvider provider) throws SQLException {
       JDBCSequentialFileFactoryDriver dbDriver;
       final PropertySQLProvider.Factory.SQLDialect sqlDialect = PropertySQLProvider.Factory.investigateDialect(connection);
+      logger.debugf("Identified sqlDialect: %s", sqlDialect);
       if (POSTGRESQL.equals(sqlDialect)) {
+         logger.debug("Using PostgresSequentialSequentialFileDriver");
          dbDriver = new PostgresSequentialSequentialFileDriver(connection, provider);
          dbDriver.setConnection(connection);
       } else if (DB2.equals(sqlDialect)) {
+         logger.debug("Using Db2SequentialFileDriver");
          dbDriver = new Db2SequentialFileDriver(connection, provider);
       } else {
+         logger.debug("Using JDBCSequentialFileFactoryDriver");
          dbDriver = new JDBCSequentialFileFactoryDriver(connection, provider);
       }
       return dbDriver;
