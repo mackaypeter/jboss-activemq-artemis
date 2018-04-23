@@ -799,9 +799,17 @@ public class BridgeImpl implements Bridge, SessionFailureListener, SendAcknowled
 
    /* Hook for creating session factory */
    protected ClientSessionFactoryInternal createSessionFactory() throws Exception {
+      logger.info("\n");
+      logger.info("PMACKAY: targetNodeId = " + targetNodeID);
+      logger.info("PMACKAY: retryCOunt = " + retryCount);
+      logger.info("PMACKAY: reconnectAttemptsSameNode = " + this.reconnectAttemptsSameNode);
+      logger.info("\n");
       if (targetNodeID != null && (this.reconnectAttemptsSameNode < 0 || retryCount <= this.reconnectAttemptsSameNode)) {
          csf = reconnectOnOriginalNode();
       } else {
+         // targetNodeID might be null
+         // OR
+         // reconnectAttemptsSameNode > 0 && < retryCount
          serverLocator.resetToInitialConnectors();
          csf = (ClientSessionFactoryInternal) serverLocator.createSessionFactory();
       }
@@ -829,6 +837,9 @@ public class BridgeImpl implements Bridge, SessionFailureListener, SendAcknowled
          }
 
          if (numberOfConfigs > 0) {
+            logger.debug("\nPMACKAY: number of configs is " + numberOfConfigs);
+            logger.debug("PMACKAY: topologymember" + nodeUse.toString());
+            logger.debug("PMACKAY: targetNode: " + targetNode.toString() + "\n");
             // It will bounce between all the available configs
             int nodeTry = (retryCount - 1) % numberOfConfigs;
 
